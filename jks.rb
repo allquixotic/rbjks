@@ -18,10 +18,6 @@ require 'base64'
 Cert = Struct.new('Cert', :alias, :timestamp, :type, :cert)
 PrivateKey = Struct.new('PrivateKey', :alias, :timestamp, :pkey, :cert_chain)
 
-#b8 = struct.Struct('>Q')
-#b4 = struct.Struct('>L')
-#b2 = struct.Struct('>H')
-
 MAGIC_NUMBER_JKS = 0xFEEDFEED
 MAGIC_NUMBER_JCEKS = 0xCECECECE
 VERSION = 2
@@ -268,16 +264,13 @@ def get_pem(data, type)
     retval << coded.slice!(0..63)
     retval << "\r\n"
   end
-  #wrappedarr.each do |wa|
-  #  retval << wa
-  #  retval << "\r\n"
-  #end
+
   retval << "-----END #{type}-----"
   retval
 end
 
-def test()
-  rslt = KeyStore::load("test.jks", 'password')
+def get_all_pem_certs(filename, password)
+  rslt = KeyStore::load(filename, password)
   rslt.private_keys.each do |pk|
     puts "Private key: #{pk.alias}"
     puts get_pem(pk.pkey, 'RSA PRIVATE KEY')
@@ -293,5 +286,3 @@ def test()
     puts
   end
 end
-
-test()
